@@ -3,14 +3,14 @@ import { getToken } from "./auth";
 const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const OFFLINE = "We couldn't reach the server. Check your connection and try again.";
 
-export async function api(path, { method = "GET", body } = {}) {
+export async function api(path, { method = "GET", body, headers = {} } = {}) {
   const token = await getToken();
   if (!token) { const e = new Error("Please sign in to continue."); e.status = 401; throw e; }
   let res;
   try {
     res = await fetch(`${BASE}/api${path}`, {
       method,
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...headers },
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch { throw new Error(OFFLINE); }

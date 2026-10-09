@@ -61,7 +61,12 @@ export default function Home() {
       </main>
       <footer className="footer"><div className="container">
         <div><Logo height={26} /><p className="small muted" style={{ margin: "6px 0 0" }}>Know It. Apply It. Prove It.</p></div>
-        <nav className="row small" aria-label="Footer"><a href="#how">How it works</a><a href="#features">Features</a><a href="#privacy">Privacy</a></nav>
+        <nav className="row small" aria-label="Footer">
+          <a href="#how">How it works</a>
+          <a href="#features">Features</a>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
+        </nav>
       </div></footer>
     </>
   );

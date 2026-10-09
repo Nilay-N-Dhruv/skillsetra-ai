@@ -5,5 +5,5 @@ export default function Logo({ height = 34 }) {
   const [broken, setBroken] = useState(false);
   if (broken) return <span className="wordmark">SkillSetra</span>;
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src="/logo.png" alt="SkillSetra" style={{ height, width: "auto" }} onError={() => setBroken(true)} />;
+  return <img src="/logo.png" alt="SkillSetra" style={{ height, width: "auto", borderRadius: Math.round(height * 0.22) }} onError={() => setBroken(true)} />;
 }

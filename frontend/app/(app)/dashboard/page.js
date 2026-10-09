@@ -8,6 +8,8 @@ import Radar from "@/components/Radar";
 import { SkillBars, TrendLine } from "@/components/Charts";
 import ClaimForm from "@/components/ClaimForm";
 import { Badge, Empty, ErrorBox, Loading } from "@/components/Status";
+import BrandLoader from "@/components/BrandLoader";
+import CountUp from "@/components/CountUp";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -16,7 +18,7 @@ export default function Dashboard() {
 
   useEffect(() => { if (data?.stage === "choose_role") router.replace("/onboarding"); }, [data, router]);
 
-  if (loading || data?.stage === "choose_role") return <Loading label="Loading your dashboard" />;
+  if (loading || data?.stage === "choose_role") return <BrandLoader label="Loading your dashboard" />;
   if (error) return <ErrorBox message={error} onRetry={reload} />;
 
   if (data.stage === "take_exam") return (
@@ -31,7 +33,7 @@ export default function Dashboard() {
     </>
   );
 
-  const { baseline: b, gaps, skills, materials, radar, trend, role } = data;
+  const { baseline: b, gaps, skills, materials, radar, trend, role, overview: o } = data;
   const q = encodeURIComponent(role);
   const retestSkill = skill || (skills.find((s) => s.state !== "Demonstrated") || skills[0]).key;
   return (
@@ -47,10 +49,10 @@ export default function Dashboard() {
       </div>
 
       <div className="kpis">
-        <div className="card kpi"><p className="eyebrow">Overall competency baseline</p><div className="num">{b.pct}%</div>
+        <div className="card kpi"><p className="eyebrow">Overall competency baseline</p><div className="num"><CountUp to={b.pct} suffix="%" /></div>
           <p className="cap">{b.correct} of {b.total} applied questions answered correctly. This measures the assessment only.</p>
           <p className="cap" style={{ marginTop: 4 }}>{b.attempts > 1 ? `${b.delta >= 0 ? "+" : ""}${b.delta} points since your first attempt` : "Your first baseline"}</p></div>
-        <div className="card kpi"><p className="eyebrow">Gaps detected</p><div className="num">{gaps.length}</div><p className="cap">Competency areas needing more evidence</p></div>
+        <div className="card kpi"><p className="eyebrow">Gaps detected</p><div className="num"><CountUp to={gaps.length} /></div><p className="cap">Competency areas needing more evidence</p></div>
         <div className="card kpi"><p className="eyebrow">Target</p><div className="num" style={{ fontSize: "1.7rem" }}>{role}</div><p className="cap">Your roadmap is anchored to this role</p></div>
       </div>
 
@@ -86,6 +88,24 @@ export default function Dashboard() {
           <Link className="btn" style={{ alignSelf: "flex-end" }} href={`/assessment?role=${q}&skill=${encodeURIComponent(retestSkill)}`}>Start skill re-test</Link>
         </div>
         <ClaimForm role={role} skills={skills.map((s) => s.key)} onDone={refresh} />
+      </div>
+
+      <div className="card" style={{ marginTop: 16 }}>
+        <p className="eyebrow">Across SkillSetra</p><h2 style={{ fontSize: "1.5rem" }}>Your progress at a glance</h2>
+        <div className="kpis" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(170px,1fr))" }}>
+          <div className="stat"><b>{o.practice.attempts}</b><p className="small muted" style={{ margin: 0 }}>Practice attempts{o.practice.last ? ` · last: ${o.practice.last}` : ""}</p></div>
+          <div className="stat"><b>{o.interviews.count}</b><p className="small muted" style={{ margin: 0 }}>Interviews{o.interviews.last ? ` · last: ${o.interviews.last}` : ""}</p></div>
+          <div className="stat"><b>{o.learning.pct}%</b><p className="small muted" style={{ margin: 0 }}>Learning items done ({o.learning.done}/{o.learning.total})</p></div>
+          <div className="stat"><b>{o.jobs.saved}</b><p className="small muted" style={{ margin: 0 }}>Saved opportunities</p></div>
+        </div>
+        <div className="grid g2" style={{ marginTop: 14 }}>
+          <div><h3>Suggested next steps</h3>
+            {o.recommendations.length === 0 ? <p className="muted small">You are up to date.</p> : <ul>{o.recommendations.map((r) => <li key={r}>{r}</li>)}</ul>}
+            <p className="small muted">Suggested from your own data, not AI-generated.</p></div>
+          <div><h3>Recent activity</h3>
+            {o.activity.length === 0 ? <p className="muted small">No activity yet.</p> : o.activity.map((a, i) => <p key={i} className="small" style={{ margin: "0 0 6px" }}>{new Date(a.when).toLocaleDateString()} · {a.text}</p>)}
+          </div>
+        </div>
       </div>
     </>
   );
