@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { callAI } from "@/lib/ai";
 import AiTag from "./AiTag";
 import { Badge, ErrorBox, Loading } from "./Status";
 
@@ -24,8 +25,13 @@ export default function LabPage({ mode, eyebrow, title, blurb, label, placeholde
 
   async function submit() {
     setBusy(true); setErr(null);
-    try { setRes(await api(`/lab/${mode}/submit`, { method: "POST", body: { prompt_id: prompt.id, text: text.trim() } })); }
-    catch (e) { setErr(e.message); }
+    try {
+      const r = await callAI(`/lab/${mode}/submit`, { method: "POST", body: { prompt_id: prompt.id, text: text.trim() } });
+      if (!r || typeof r.sections !== "object" || r.sections === null) {
+        throw new Error("The AI did not return a usable answer. Please try again.");
+      }
+      setRes(r);
+    } catch (e) { setErr(e.message); }
     setBusy(false);
   }
 
@@ -45,9 +51,13 @@ export default function LabPage({ mode, eyebrow, title, blurb, label, placeholde
       </div>
       {res && (
         <div className="card diag" style={{ marginTop: 20 }} aria-live="polite">
-          <div className="row"><strong>Result</strong>{res.level !== null && <Badge state={STATE[res.level]} />}<AiTag source={res.source} /></div>
-          {res.evidence_saved && <p className="small muted">Saved to your evidence timeline. Confidence about {Math.round(res.confidence * 100)}%.</p>}
-          {Object.entries(res.sections).map(([k, items]) => items.length > 0 && (
+          <div className="row">
+            <strong>Result</strong>
+            {res.level !== null && res.level !== undefined && <Badge state={STATE[res.level]} />}
+            <AiTag source={res.source} />
+          </div>
+          {res.evidence_saved && <p className="small muted">Saved to your evidence timeline. Confidence about {Math.round((res.confidence || 0) * 100)}%.</p>}
+          {Object.entries(res.sections || {}).map(([k, items]) => Array.isArray(items) && items.length > 0 && (
             <div key={k}><h4>{pretty(k)}</h4><ul>{items.map((x, i) => <li key={i}>{x}</li>)}</ul></div>))}
         </div>)}
     </>

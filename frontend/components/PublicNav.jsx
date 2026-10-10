@@ -8,7 +8,7 @@ export default function PublicNav() {
   const { user, loading } = useAuth();
   return (
     <header className="topbar"><div className="container">
-      <Link href="/" aria-label="SkillSetra home"><Logo /></Link>
+      <Link href="/" aria-label="SkillSetra home"><Logo height={44} /></Link>
       <nav aria-label="Public navigation">
         <a href="#how">How it works</a><a href="#features">Features</a><a href="#privacy">Privacy</a>
         <ThemeToggle />

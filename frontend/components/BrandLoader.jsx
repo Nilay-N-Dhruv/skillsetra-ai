@@ -9,7 +9,7 @@ export default function BrandLoader({ label = "Loading SkillSetra" }) {
           <span className="loader-orbit o1" aria-hidden><i /></span>
           <span className="loader-orbit o2" aria-hidden><i /></span>
           <span className="loader-ring" aria-hidden />
-          <div className="loader-mark"><div className="loader-float"><Logo height={76} /></div></div>
+          <div className="loader-mark"><div className="loader-float"><Logo height={100} /></div></div>
         </div>
         <div className="loader-bar" aria-hidden><i /></div>
         <p className="loader-text">{label}<span className="dots" aria-hidden><b>.</b><b>.</b><b>.</b></span></p>
