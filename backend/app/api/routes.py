@@ -181,14 +181,7 @@ async def put_role(
         if k != "created_at"
     }
 
-    await db.upsert(
-        "profiles",
-        {
-            **base,
-            "user_id": user.id,
-            **body.model_dump()
-        }
-    )
+    await db.upsert("profiles", {**base, "user_id": user.id, **body.model_dump(exclude_unset=True)})
 
     return {"ok": True}
 

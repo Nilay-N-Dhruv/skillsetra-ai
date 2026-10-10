@@ -38,6 +38,10 @@ const GROUPS = [
     { href: "/career", label: "Career Intelligence", Icon: Briefcase },
     { href: "/jobs", label: "Jobs / Opportunities", Icon: Building2 },
   ] },
+    { label: "Insights", items: [
+    { href: "/skill-dna", label: "Skill DNA", Icon: Fingerprint },
+    { href: "/growth", label: "Proof of Growth", Icon: TrendingUp },
+  ] },
   { label: "Account", items: [
     { href: "/profile", label: "Profile", Icon: User },
     // { href: "/notifications", label: "Notifications", Icon: Bell },
