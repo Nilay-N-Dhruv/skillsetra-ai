@@ -23,6 +23,12 @@ app = FastAPI(
     redoc_url=None,
     openapi_url=None if prod else "/openapi.json"
 )
+@app.get("/")
+def health_check():
+    return {
+        "status": "ok",
+        "service": "SkillSetra API"
+    }
 
 app.add_middleware(
     CORSMiddleware,
