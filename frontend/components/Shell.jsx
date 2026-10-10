@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, ClipboardCheck, Puzzle, Brain, ShieldCheck, Mic, ScanSearch, Github,
   Library, Map, Briefcase, Building2, User, Bell, Settings, LogOut, Menu, X, Lock,
-  PanelLeftClose, PanelLeftOpen,
+  PanelLeftClose, PanelLeftOpen, Fingerprint, TrendingUp,
 } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import Logo from "./Logo";
