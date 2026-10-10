@@ -34,14 +34,15 @@ const GROUPS = [
     { href: "/resources", label: "Resources", Icon: Library },
     { href: "/roadmap", label: "Roadmap", Icon: Map },
   ] },
-  { label: "Career", items: [
-    { href: "/career", label: "Career Intelligence", Icon: Briefcase },
-    { href: "/jobs", label: "Jobs / Opportunities", Icon: Building2 },
-  ] },
     { label: "Insights", items: [
     { href: "/skill-dna", label: "Skill DNA", Icon: Fingerprint },
     { href: "/growth", label: "Proof of Growth", Icon: TrendingUp },
   ] },
+  { label: "Career", items: [
+    { href: "/career", label: "Career Intelligence", Icon: Briefcase },
+    { href: "/jobs", label: "Jobs / Opportunities", Icon: Building2 },
+  ] },
+  
   { label: "Account", items: [
     { href: "/profile", label: "Profile", Icon: User },
     // { href: "/notifications", label: "Notifications", Icon: Bell },

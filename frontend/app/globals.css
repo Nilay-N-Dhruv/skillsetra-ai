@@ -804,3 +804,148 @@ table.sheet th,table.sheet td{text-align:left;padding:8px 10px;border-bottom:1px
   .shell{display:block}.main{max-width:none;padding:0}
   body{background:#fff;color:#000}.card{break-inside:avoid;box-shadow:none}
 }
+
+
+
+/* Skill DNA evidence section */
+.evidence-heading {
+  margin: 30px 0 14px;
+}
+
+/* Independent columns: cards don't stretch neighboring cards */
+.evidence-list {
+  display: block;
+  column-count: 2;
+  column-gap: 20px;
+  width: 100%;
+}
+
+.evidence-card {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 16px;
+  break-inside: avoid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.evidence-card:hover {
+  border-color: var(--teal);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+}
+
+.evidence-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 18px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.evidence-info {
+  display: flex;
+  flex: 1 1 180px;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.evidence-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.evidence-description {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.evidence-meta {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.evidence-count {
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.evidence-chevron {
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+
+.evidence-details {
+  min-width: 0;
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--line);
+}
+
+.evidence-details .sheet {
+  margin-top: 14px;
+}
+
+.evidence-table-wrap {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.evidence-table-wrap .sheet {
+  min-width: 580px;
+}
+
+/* Tablet and mobile */
+@media (max-width: 1050px) {
+  .evidence-list {
+    column-count: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .evidence-toggle {
+    flex-wrap: wrap;
+    padding: 15px;
+  }
+
+  .evidence-info {
+    flex-basis: calc(100% - 44px);
+  }
+
+  .evidence-meta {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+
+  .evidence-details {
+    padding: 0 12px 14px;
+  }
+}
