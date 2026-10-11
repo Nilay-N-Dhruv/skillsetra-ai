@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import {
   LayoutDashboard, ClipboardCheck, Puzzle, Brain, ShieldCheck, Mic, ScanSearch, Github,
   Library, Map, Briefcase, Building2, User, Bell, Settings, LogOut, Menu, X, Lock,
-  PanelLeftClose, PanelLeftOpen, Fingerprint, TrendingUp,
+  PanelLeftClose, PanelLeftOpen, Fingerprint, TrendingUp,Network,BadgeCheck
 } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import Logo from "./Logo";
@@ -37,6 +37,8 @@ const GROUPS = [
     { label: "Insights", items: [
     { href: "/skill-dna", label: "Skill DNA", Icon: Fingerprint },
     { href: "/growth", label: "Proof of Growth", Icon: TrendingUp },
+    { href: "/evidence-graph", label: "Evidence Graph", Icon: Network },
+    { href: "/passport", label: "Proof Passport", Icon: BadgeCheck },
   ] },
   { label: "Career", items: [
     { href: "/career", label: "Career Intelligence", Icon: Briefcase },

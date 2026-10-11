@@ -334,20 +334,24 @@ async def roadmap(user: CurrentUser = Depends(get_current_user)):
 @router.delete("/me/data")
 async def delete_my_data(
     user: CurrentUser = Depends(get_current_user)
+    
 ):
     db = db_for(user)
 
-    for t in (
-        "evidence",
-        "exam_results",
-        "exam_sessions",
-        "challenge_attempts",
-        "github_repositories",
-        "notifications",
-        "interview_sessions",
-        "learning_progress",
-        "saved_jobs",
-    ):
+    # for t in (
+    #     "evidence",
+    #     "exam_results",
+    #     "exam_sessions",
+    #     "challenge_attempts",
+    #     "github_repositories",
+    #     "notifications",
+    #     "interview_sessions",
+    #     "learning_progress",
+    #     "saved_jobs",
+    # ):
+    for t in ("evidence", "exam_results", "exam_sessions", "challenge_attempts", "github_repositories",
+              "notifications", "interview_sessions", "learning_progress", "saved_jobs", "passports"):
+    
         await db.delete(
             t,
             user.id

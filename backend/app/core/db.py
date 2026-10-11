@@ -65,6 +65,13 @@ class MemoryDB:
     async def delete(self, table, user_id, **eq):
         self.t[table] = [r for r in self.t[table] if not _match(r, user_id, eq)]
 
+    async def find(self, table, **eq):
+        """Find one row WITHOUT a user filter. Only for public lookups by an unguessable key."""
+        for r in self.t[table]:
+            if all(r.get(k) == v for k, v in eq.items()):
+                return dict(r)
+        return None
+
 
 class SupabaseDB:
     def __init__(self):
@@ -114,6 +121,10 @@ class SupabaseDB:
     async def delete(self, table, user_id, **eq):
         await self._req("DELETE", table, params=self._filters(user_id, eq))
 
+    async def find(self, table, **eq):
+        rows = await self._req("GET", table, params={**{k: f"eq.{v}" for k, v in eq.items()}, "limit": "1"})
+        return rows[0] if rows else None
+
 
 _demo_db: MemoryDB | None = None
 _real_db = None
@@ -135,3 +146,15 @@ def db_for(user):
 def forget_demo(user_id):
     if _demo_db:
         _demo_db.forget(user_id)
+
+
+def db_public():
+    """The store used for PUBLIC lookups (no signed-in user): Supabase when configured, otherwise memory."""
+    global _demo_db, _real_db
+    if settings.supabase_url and settings.supabase_service_role_key:
+        if _real_db is None:
+            _real_db = SupabaseDB()
+        return _real_db
+    if _demo_db is None:
+        _demo_db = MemoryDB()
+    return _demo_db

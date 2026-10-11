@@ -949,3 +949,16 @@ table.sheet th,table.sheet td{text-align:left;padding:8px 10px;border-bottom:1px
     padding: 0 12px 14px;
   }
 }
+
+.egraph{width:100%;height:auto}
+.egraph .edge{fill:none;stroke:var(--line);stroke-linecap:round}
+.egraph .edge.on{stroke:var(--teal)}
+.egraph .node{cursor:pointer}
+.egraph .node rect{fill:var(--card);stroke:var(--line)}
+.egraph .node.sel rect{stroke:var(--teal);stroke-width:2}
+.egraph .node:focus-visible rect{stroke:var(--blue);stroke-width:2}
+.egraph .node text{fill:var(--ink);font-size:12px}
+.kdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.k-demonstrated{background:var(--ok-t)}.k-self-reported{background:var(--warn-t)}
+.k-insufficient{background:var(--muted)}.k-outdated{background:var(--gap-t)}
+.copybox{display:flex;gap:8px}.copybox input{flex:1}

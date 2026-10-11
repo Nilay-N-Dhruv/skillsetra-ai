@@ -88,6 +88,7 @@ class RateLimiter:
 
 
 ip_limiter = RateLimiter(settings.rate_limit_per_minute)
+public_limiter = RateLimiter(30)   # public passport pages: 30 requests per minute per IP
 ai_limiter = RateLimiter(settings.ai_rate_limit_per_minute)
 
 
