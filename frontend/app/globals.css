@@ -962,3 +962,4 @@ table.sheet th,table.sheet td{text-align:left;padding:8px 10px;border-bottom:1px
 .k-demonstrated{background:var(--ok-t)}.k-self-reported{background:var(--warn-t)}
 .k-insufficient{background:var(--muted)}.k-outdated{background:var(--gap-t)}
 .copybox{display:flex;gap:8px}.copybox input{flex:1}
+

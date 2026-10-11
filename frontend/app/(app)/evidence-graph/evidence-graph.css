@@ -1152,3 +1152,101 @@
   }
 }
 
+/* ==========================================
+   EVIDENCE GRAPH — SKILL DNA TYPOGRAPHY
+   Matches the Skill DNA reference design
+   ========================================== */
+
+.egraph,
+.egraph *,
+.eg-page,
+.eg-page input,
+.eg-page select,
+.eg-page button,
+.eg-page textarea {
+  font-family: var(--font), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Main page heading */
+.eg-page h1 {
+  font-family: var(--font-head), var(--font), system-ui, sans-serif;
+  font-size: clamp(2rem, 3.5vw, 3.25rem);
+  font-weight: 750;
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+}
+
+/* Section headings */
+.eg-page h2,
+.eg-page h3,
+.eg-page h4 {
+  font-family: var(--font-head), var(--font), system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+/* Graph node typography */
+.egraph .node text {
+  font-family: var(--font), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+}
+
+/* Graph node labels when selected */
+.egraph .node.sel text,
+.egraph .node.selected text {
+  font-weight: 700;
+}
+
+/* Page descriptions */
+.eg-heading-copy p,
+.eg-filter-header p,
+.eg-card-header p,
+.eg-detail-description {
+  font-family: var(--font), system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.7;
+}
+
+/* Evidence names and skill titles */
+.eg-detail-title h3,
+.eg-skill-name strong,
+.eg-record-heading strong {
+  font-family: var(--font-head), var(--font), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Filter labels and supporting metadata */
+.eg-filter-field > span,
+.eg-stat-label,
+.eg-legend-item,
+.eg-status,
+.eg-record-meta {
+  font-family: var(--font), system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+/* Controls inherit the same typography */
+.eg-page button,
+.eg-page input,
+.eg-page select {
+  font-size: inherit;
+}
+
+/* Mobile heading scale */
+@media (max-width: 700px) {
+  .eg-page h1 {
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+  }
+
+  .egraph .node text {
+    font-size: 11px;
+  }
+}
