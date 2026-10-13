@@ -164,27 +164,15 @@ async def get_profile(user: CurrentUser = Depends(get_current_user)):
 
 
 @router.put("/profile/role")                        # change role later, or set it in demo mode
-async def put_role(
-    body: RoleIn,
-    user: CurrentUser = Depends(get_current_user)
-):
+async def put_role(body: RoleIn, user: CurrentUser = Depends(get_current_user)):
     db = db_for(user)
-
-    rows = await db.select(
-        "profiles",
-        user.id
-    )
-
-    base = {
-        k: v
-        for k, v in (rows[0] if rows else {}).items()
-        if k != "created_at"
-    }
-
+    rows = await db.select("profiles", user.id)
+    base = {k: v for k, v in (rows[0] if rows else {}).items() if k != "created_at"}
+    old = base.get("target_role")
     await db.upsert("profiles", {**base, "user_id": user.id, **body.model_dump(exclude_unset=True)})
-
+    if old and old != body.target_role:                # remember when and between which roles you switched
+        await db.insert("role_switches", {"user_id": user.id, "from_role": old, "to_role": body.target_role})
     return {"ok": True}
-
 
 @router.get("/competencies")
 async def competencies(
@@ -350,7 +338,8 @@ async def delete_my_data(
     #     "saved_jobs",
     # ):
     for t in ("evidence", "exam_results", "exam_sessions", "challenge_attempts", "github_repositories",
-              "notifications", "interview_sessions", "learning_progress", "saved_jobs", "passports"):
+              "notifications", "interview_sessions", "learning_progress", "saved_jobs", "passports",
+              "job_analyses", "role_switches"):
     
         await db.delete(
             t,

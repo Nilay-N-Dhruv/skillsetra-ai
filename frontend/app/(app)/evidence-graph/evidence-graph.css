@@ -2306,16 +2306,6 @@
 
 
 
-/* ==========================================
-
-   EVIDENCE GRAPH — SKILL DNA TYPOGRAPHY
-
-   Matches the Skill DNA reference design
-
-   ========================================== */
-
-
-
 .egraph,
 
 .egraph *,
@@ -2341,9 +2331,6 @@
 }
 
 
-
-/* Main page heading */
-
 .eg-page h1 {
 
   font-family: var(--font-head), var(--font), system-ui, sans-serif;
@@ -2358,9 +2345,6 @@
 
 }
 
-
-
-/* Section headings */
 
 .eg-page h2,
 
@@ -2379,9 +2363,6 @@
 }
 
 
-
-/* Graph node typography */
-
 .egraph .node text {
 
   font-family: var(--font), system-ui, sans-serif;
@@ -2395,9 +2376,6 @@
 }
 
 
-
-/* Graph node labels when selected */
-
 .egraph .node.sel text,
 
 .egraph .node.selected text {
@@ -2408,7 +2386,6 @@
 
 
 
-/* Page descriptions */
 
 .eg-heading-copy p,
 
@@ -2429,9 +2406,6 @@
 }
 
 
-
-/* Evidence names and skill titles */
-
 .eg-detail-title h3,
 
 .eg-skill-name strong,
@@ -2446,9 +2420,6 @@
 
 }
 
-
-
-/* Filter labels and supporting metadata */
 
 .eg-filter-field > span,
 
@@ -2467,9 +2438,6 @@
 }
 
 
-
-/* Controls inherit the same typography */
-
 .eg-page button,
 
 .eg-page input,
@@ -2480,9 +2448,6 @@
 
 }
 
-
-
-/* Mobile heading scale */
 
 @media (max-width: 700px) {
 
@@ -2501,11 +2466,6 @@
   }
 
 }
-
-/* ==========================================
-   EVIDENCE GRAPH — FILTER CONTRAST FIX
-   Keeps native dropdown text readable in themes
-   ========================================== */
 
 .eg-page .eg-search-control,
 .eg-page .eg-select-control {
@@ -2526,7 +2486,6 @@
   opacity: 1;
 }
 
-/* The native popup uses explicit colors instead of inherited white text. */
 .eg-page .eg-select-control select {
   color-scheme: dark;
 }
