@@ -69,8 +69,8 @@ export default function Login() {
         {err && <p role="alert" style={{ color: "var(--bad-t)", margin: "12px 0 0" }}>{err}</p>}
         <button className="btn primary" style={{ width: "100%", marginTop: 18 }} disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
       </form>
-      {/* <div className="divider">or</div> */}
-      {/* <button className="btn" style={{ width: "100%" }} onClick={() => { startDemo(); router.push("/dashboard"); }}>Explore the demo (no account)</button> */}
+      <div className="divider">or</div> 
+      <button className="btn" style={{ width: "100%" }} onClick={() => { startDemo(); router.push("/dashboard"); }}>Explore the demo (no account)</button>
     </AuthShell>
   );
 }
