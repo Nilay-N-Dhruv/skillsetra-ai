@@ -40,11 +40,11 @@ export default function Home() {
           <p>These show activity. They rarely show whether you can solve an unfamiliar problem, fix broken code or defend a decision. That is the knowledge-to-competency gap, and SkillSetra is built to close it.</p>
         </div></section>
 
-        <section className="block alt" id="how"><div className="container">
+        {/* <section className="block alt" id="how"><div className="container">
           <h2>One loop, always moving forward</h2>
           <ol className="loop">{LOOP.map((s) => <li key={s}>{s}</li>)}</ol>
           <p style={{ marginTop: 16 }}>Each new piece of evidence changes your profile and what you should do next.</p>
-        </div></section>
+        </div></section> */}
 
         <section className="block" id="features"><div className="container">
           <h2>What you get</h2>
