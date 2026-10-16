@@ -63,7 +63,7 @@ const GROUPS = [
   {
     label: "Build",
     items: [
-      { href: "/interpret", label: "Interpretation", Icon: ScanSearch },
+      // { href: "/interpret", label: "Interpretation", Icon: ScanSearch },
       { href: "/github", label: "GitHub Intelligence", Icon: Github },
     ],
   },
