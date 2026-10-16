@@ -28,7 +28,7 @@ export default function Home() {
             <p style={{ fontSize: "1.15rem" }}>SkillSetra discovers what you know, analyzes what you build, tests what you can actually do, and creates the next path to grow your real-world competency.</p>
             <div className="row">
               <Link className="btn primary" href="/signup">Discover my competencies</Link>
-              <a className="btn" href="#how">See how it works</a>
+              {/* <a className="btn" href="#how">See how it works</a> */}
             </div>
           </div>
           <div><Radar items={SAMPLE} /><p className="small muted" style={{ textAlign: "center" }}>Illustrative profile. The centre means "no evidence yet", not "weak".</p></div>
@@ -62,8 +62,9 @@ export default function Home() {
       <footer className="footer"><div className="container">
         <div><Logo height={26} /><p className="small muted" style={{ margin: "6px 0 0" }}>Know It. Apply It. Prove It.</p></div>
         <nav className="row small" aria-label="Footer">
-          <a href="#how">How it works</a>
-          <a href="#features">Features</a>
+          {/* <a href="#how">How it works</a>
+          <a href="#features">Features</a> */}
+          <a href="#features">How it works</a>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
         </nav>

@@ -10,7 +10,10 @@ export default function PublicNav() {
     <header className="topbar"><div className="container">
       <Link href="/" aria-label="SkillSetra home"><Logo height={44} /></Link>
       <nav aria-label="Public navigation">
-        <a href="#how">How it works</a><a href="#features">Features</a><a href="#privacy">Privacy</a>
+        {/* <a href="#how">How it works</a> */}
+        {/* <a href="#features">Features</a> */}
+        <a href="#features">how it works</a>
+        <a href="#privacy">Privacy</a>
         <ThemeToggle />
         {!loading && user
           ? <Link className="btn primary" href="/dashboard">Open dashboard</Link>

@@ -30,6 +30,7 @@ import {
   BadgeCheck,
   Radar,
   FileSearch,
+  FileText,
 } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import Logo from "./Logo";
@@ -38,6 +39,7 @@ import BrandLoader from "./BrandLoader";
 import NotificationBell from "./NotificationBell";
 import CoachButton from "./CoachButton";
 import { api } from "@/lib/api";
+import { signedUrl } from "@/lib/storage";
 import HeaderSearch from "./HeaderSearch";
 
 const GROUPS = [
@@ -55,6 +57,7 @@ const GROUPS = [
       { href: "/reasoning", label: "Reasoning Lab", Icon: Brain },
       { href: "/defense", label: "Project Defense", Icon: ShieldCheck },
       { href: "/interviewer", label: "AI Interviewer", Icon: Mic },
+      // { href: "/resume-analysis", label: "Resume analysis", Icon: FileText },
     ],
   },
   {
@@ -74,16 +77,16 @@ const GROUPS = [
   {
     label: "Insights",
     items: [
-      { href: "/skill-dna", label: "Skill DNA", Icon: Fingerprint },
-      { href: "/growth", label: "Proof of Growth", Icon: TrendingUp },
+      // { href: "/skill-dna", label: "Skill DNA", Icon: Fingerprint },
+      // { href: "/growth", label: "Proof of Growth", Icon: TrendingUp },
       { href: "/evidence-graph", label: "Evidence Graph", Icon: Network },
-      { href: "/passport", label: "Proof Passport", Icon: BadgeCheck },
+      //{ href: "/passport", label: "Proof Passport", Icon: BadgeCheck },
     ],
   },
   {
     label: "Career",
     items: [
-      { href: "/career", label: "Career Intelligence", Icon: Briefcase },
+     // { href: "/career", label: "Career Intelligence", Icon: Briefcase },
       { href: "/jobs", label: "Jobs / Opportunities", Icon: Building2 },
       { href: "/opportunity-radar", label: "Opportunity Radar", Icon: Radar },
       { href: "/job-check", label: "Job Reality Check", Icon: FileSearch },
@@ -107,6 +110,7 @@ export default function Shell({ children }) {
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
   // Hooks must stay above every early return below.
   useEffect(() => {
@@ -137,15 +141,23 @@ export default function Shell({ children }) {
   useEffect(() => {
     if (!user || user.demo) {
       setProfile(null);
+      setAvatarUrl(null);
       return;
     }
 
     let on = true;
 
-    const load = () =>
-      api("/profile")
-        .then((p) => on && setProfile(p))
-        .catch(() => {});
+    const load = async () => {
+      try {
+        const details = await api("/profile/details");
+        if (!on) return;
+        setProfile(details);
+        if (details.avatar_path) {
+          try { setAvatarUrl(await signedUrl("avatars", details.avatar_path)); }
+          catch { setAvatarUrl(null); }
+        } else setAvatarUrl(null);
+      } catch {}
+    };
 
     load();
 
@@ -299,9 +311,13 @@ export default function Shell({ children }) {
               title={user.email || "Demo account"}
             >
               <div className="avatar-ring" aria-hidden>
-                <div className="avatar">
-                  {display[0].toUpperCase()}
-                </div>
+                {avatarUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img className="avatar" src={avatarUrl} alt="" loading="lazy"
+                    onError={() => setAvatarUrl(null)} style={{ objectFit: "cover" }} />
+                ) : (
+                  <div className="avatar">{display[0].toUpperCase()}</div>
+                )}
                 <span className="online-dot" />
               </div>
 

@@ -1,9 +1,19 @@
-"use client";
-import { useState } from "react";
-
 export default function Logo({ height = 34 }) {
-  const [broken, setBroken] = useState(false);
-  if (broken) return <span className="wordmark">SkillSetra</span>;
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src="/logo.png" alt="SkillSetra" style={{ height, width: "auto", borderRadius: Math.round(height * 0.22) }} onError={() => setBroken(true)} />;
+  return (
+    <span
+      className="wordmark"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        minHeight: height,
+        fontSize: height >= 40 ? "1.35rem" : "1.15rem",
+        fontWeight: 800,
+        letterSpacing: "-0.035em",
+        color: "var(--text, #123126)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      SkillSetra
+    </span>
+  );
 }

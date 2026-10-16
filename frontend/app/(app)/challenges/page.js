@@ -61,14 +61,29 @@ export default function Challenges() {
       <p className="eyebrow">Evaluation</p><h1>What your answer shows</h1>
       <div className="card diag" aria-live="polite">
         <div className="row"><strong>{res.competency}</strong><Badge state={res.state_after} /><AiTag source={res.source} /></div>
-        <p className="muted small" style={{ margin: "6px 0" }}>Score: {res.level_label} (level {res.level} of 3). Before: {res.state_before}. Now: {res.state_after}. Confidence about {Math.round(res.confidence * 100)}%, so treat this as guidance.</p>
-        {res.comparison && <p><strong>Re-test:</strong> level {res.comparison.previous_level} before, level {res.comparison.new_level} now.</p>}
-        <List title="What was observed" items={res.observed} /><List title="What supports this" items={res.supports} />
-        <List title="What remains uncertain" items={res.uncertain} /><List title="What to improve" items={res.improve} />
-        <h4>Next step</h4><p>{res.next_action}</p>
-        <div className="row">
+        <p className="muted small" style={{ margin: "6px 0" }}>Your result: {res.level_label}. {res.state_after || "Keep practising"}.</p>
+        <section className="item" style={{ margin: "16px 0", padding: 18 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <div><strong>Practice progress</strong><p className="small muted" style={{ margin: "4px 0 0" }}>Based on this practice attempt</p></div>
+            <strong style={{ fontSize: "2rem", lineHeight: 1.1, color: "var(--good, #16803d)" }}>{Math.round(Math.max(0, Math.min(3, Number(res.level) || 0)) / 3 * 100)}%</strong>
+          </div>
+          <div className="bar" style={{ height: 12, marginTop: 12, overflow: "hidden" }}><i style={{ display: "block", height: "100%", width: `${Math.round(Math.max(0, Math.min(3, Number(res.level) || 0)) / 3 * 100)}%`, transition: "width .25s ease" }} /></div>
+          <p className="small muted" style={{ marginBottom: 0 }}>Practice indicator, not a hiring prediction. Feedback confidence: {Math.round((Number(res.confidence) || 0) * 100)}%.</p>
+        </section>
+        <h4 style={{ marginBottom: 8 }}>Quick feedback</h4>
+        {(res.improve || []).length ? <ul style={{ marginTop: 0 }}>{res.improve.slice(0, 2).map((item, i) => <li key={i}>{item}</li>)}</ul> : <p className="small muted">No specific improvement note was returned. Review the details below.</p>}
+        {res.next_action && <p><strong>Next step:</strong> {res.next_action}</p>}
+        {res.comparison && <p className="small muted">Retest: level {res.comparison.previous_level} before → level {res.comparison.new_level} now.</p>}
+        <details style={{ margin: "12px 0" }}>
+          <summary style={{ cursor: "pointer", fontWeight: 600 }}>View detailed feedback</summary>
+          <List title="What was observed" items={(res.observed || []).slice(0, 4)} />
+          <List title="Evidence" items={(res.supports || []).slice(0, 3)} />
+          <List title="What remains uncertain" items={(res.uncertain || []).slice(0, 2)} />
+          <List title="More ways to improve" items={(res.improve || []).slice(2, 5)} />
+        </details>
+        <div className="row" style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
           <button className="btn" onClick={() => load({ id: ch.id })}>Retry this problem</button>
-          <button className="btn primary" onClick={() => load({ competency: res.competency })}>Adaptive re-test (different problem)</button>
+          <button className="btn primary" onClick={() => load({ competency: res.competency })}>Adaptive re-test</button>
           <button className="btn" onClick={() => load({ competency: cat })}>Next problem</button>
           <Link className="btn" href="/roadmap">Learning resources</Link>
         </div>

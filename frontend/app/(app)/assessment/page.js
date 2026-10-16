@@ -1,4 +1,3 @@
-// frontend/app/(app)/assessment/page.js
 
 "use client";
 
@@ -9,30 +8,36 @@ import { api } from "@/lib/api";
 import { ErrorBox, Loading } from "@/components/Status";
 
 const LETTERS = ["A", "B", "C", "D"];
+const LEVELS = ["Beginner", "Intermediate", "Advanced"];
 
 function Exam() {
   const router = useRouter();
   const params = useSearchParams();
 
   const [exam, setExam] = useState(null);
-  const [i, setI] = useState(0);
+  const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
   const [err, setErr] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState(
+    params.get("level") || "Beginner"
+  );
 
-  async function start() {
+  async function start(levelOverride = selectedLevel) {
     setErr(null);
     setExam(null);
     setResult(null);
     setAnswers({});
-    setI(0);
+    setIndex(0);
+    setBusy(false);
 
     try {
       let role = params.get("role");
 
       if (!role) {
-        role = (await api("/profile")).target_role;
+        const profile = await api("/profile");
+        role = profile.target_role;
       }
 
       if (!role) {
@@ -42,178 +47,265 @@ function Exam() {
 
       const skill = params.get("skill");
 
-      setExam(
-        await api("/exam/start", {
-          method: "POST",
-          body: {
-            role,
-            ...(skill ? { skill } : {}),
-          },
-        })
-      );
-    } catch (e) {
-      setErr(e.message);
+      const nextExam = await api("/exam/start", {
+        method: "POST",
+        body: {
+          role,
+          level: levelOverride,
+          ...(skill ? { skill } : {}),
+        },
+      });
+
+      if (!Array.isArray(nextExam.questions) ||
+          nextExam.questions.length === 0) {
+        setExam(nextExam);
+        setErr(
+          "No questions are available for this role and level. " +
+          "Choose another difficulty or try again later."
+        );
+        return;
+      }
+
+      setExam(nextExam);
+      setSelectedLevel(nextExam.level || levelOverride);
+    } catch (error) {
+      setErr(error.message || "Unable to start the assessment.");
     }
   }
 
   useEffect(() => {
-    start();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const initialLevel = LEVELS.includes(params.get("level"))
+      ? params.get("level")
+      : "Beginner";
+
+    setSelectedLevel(initialLevel);
+    start(initialLevel);
+
+    // Start once when the page mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function submit() {
+    if (!exam || busy) return;
+
     setBusy(true);
     setErr(null);
 
     try {
-      setResult(
-        await api("/exam/submit", {
-          method: "POST",
-          body: {
-            session_id: exam.session_id,
-            answers,
-          },
-        })
-      );
-    } catch (e) {
-      setErr(e.message);
-    }
+      const data = await api("/exam/submit", {
+        method: "POST",
+        body: {
+          session_id: exam.session_id,
+          answers,
+        },
+      });
 
-    setBusy(false);
+      setResult(data);
+    } catch (error) {
+      setErr(error.message || "Unable to submit the assessment.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!exam && !err) {
+    return <Loading label="Preparing your assessment..." />;
   }
 
   if (err && !exam) {
-    return (
-      <ErrorBox
-        message={err}
-        onRetry={start}
-      />
-    );
+    return <ErrorBox message={err} onRetry={() => start()} />;
   }
 
-  if (!exam) {
+  const questions = Array.isArray(exam?.questions)
+    ? exam.questions
+    : [];
+
+  if (exam && questions.length === 0 && !result) {
     return (
-      <Loading
-        label={
-          params.get("skill")
-            ? `Preparing your ${params.get("skill")} assessment`
-            : "Preparing your assessment"
-        }
-      />
+      <div className="card">
+        <h2>No questions available</h2>
+        <p className="muted">{err || "Please select another level."}</p>
+
+        <label htmlFor="retry-level">Difficulty level</label>
+        <select
+          id="retry-level"
+          value={selectedLevel}
+          onChange={(event) => setSelectedLevel(event.target.value)}
+        >
+          {LEVELS.map((level) => (
+            <option key={level} value={level}>
+              {level}
+            </option>
+          ))}
+        </select>
+
+        <button
+          className="btn primary"
+          style={{ marginTop: 12 }}
+          onClick={() => start(selectedLevel)}
+        >
+          Try again
+        </button>
+      </div>
     );
   }
 
   if (result) {
+    const total = Number(result.total) || questions.length;
+    const correct = Number(result.correct) || 0;
+    const percentage = total > 0
+      ? Math.round((correct / total) * 100)
+      : 0;
+
     return (
       <>
         <p className="eyebrow">Assessment complete</p>
+        <h1>Your results</h1>
 
-        <h1>
-          {result.correct} of {result.total} answered correctly
-        </h1>
+        <div className="card" style={{ marginBottom: 20 }}>
+          <h2>{percentage}%</h2>
+          <p>
+            You answered {correct} out of {total} questions correctly.
+          </p>
 
-        <p className="muted">
-          This measures these applied questions only, not your overall
-          ability. Review each answer, then see your dashboard.
-        </p>
+          <div
+            className="bar"
+            role="progressbar"
+            aria-label="Assessment score"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={percentage}
+          >
+            <i style={{ width: `${percentage}%` }} />
+          </div>
 
-        <div
-          className="grid"
-          style={{ margin: "20px 0" }}
-        >
-          {result.review.map((r, n) => (
-            <div className="card" key={r.id}>
-              <p className="eyebrow">
-                {n + 1} · {r.dimension} · {r.skill}
-              </p>
-
-              <h3>{r.prompt}</h3>
-
-              {r.options.map((o, k) => (
-                <div
-                  key={k}
-                  className={`option ${
-                    k === r.correct_index
-                      ? "right"
-                      : k === r.chosen
-                        ? "wrong"
-                        : ""
-                  }`}
-                  style={{ cursor: "default" }}
-                >
-                  {LETTERS[k]}. {o}
-                </div>
-              ))}
-
-              <p
-                className="muted"
-                style={{ margin: 0 }}
-              >
-                <strong>
-                  {r.correct ? "Correct." : "Not quite."}
-                </strong>{" "}
-                {r.why}
-              </p>
-            </div>
-          ))}
+          <p className="small muted">
+            This score reflects this assessment only, not your overall ability.
+          </p>
         </div>
 
-        <div className="row">
-          <Link
-            className="btn primary"
-            href="/dashboard"
-          >
-            Go to my dashboard
+        <h2>Answer review</h2>
+
+        {(result.review || []).map((item, number) => (
+          <div className="card" key={item.id || number}>
+            <p className="eyebrow">
+              Question {number + 1}
+              {item.dimension ? ` · ${item.dimension}` : ""}
+            </p>
+
+            <h3>{item.prompt}</h3>
+
+            {(item.options || []).map((option, optionIndex) => (
+              <div
+                key={optionIndex}
+                className={`option ${
+                  optionIndex === item.correct_index
+                    ? "right"
+                    : optionIndex === item.chosen
+                      ? "wrong"
+                      : ""
+                }`}
+                style={{ cursor: "default" }}
+              >
+                {LETTERS[optionIndex]}. {option}
+              </div>
+            ))}
+
+            <p>
+              <strong>{item.correct ? "Correct" : "Incorrect"}</strong>
+              {item.why ? ` — ${item.why}` : ""}
+            </p>
+          </div>
+        ))}
+
+        <div className="row" style={{ marginTop: 20 }}>
+          <Link className="btn primary" href="/dashboard">
+            Go to dashboard
           </Link>
 
           <button
             className="btn"
-            onClick={start}
+            onClick={() => start(selectedLevel)}
           >
-            Take another assessment
+            Try again
           </button>
         </div>
       </>
     );
   }
 
-  const q = exam.questions[i];
-  const last = i === exam.total - 1;
+  const questionCount = questions.length;
+  const question = questions[index];
+  const isLast = index === questionCount - 1;
+  const answeredCount = Object.keys(answers).length;
+  const progress = Math.round(
+    (answeredCount / questionCount) * 100
+  );
+
+  function changeLevel(level) {
+    setSelectedLevel(level);
+    start(level);
+  }
 
   return (
     <>
-      <p className="eyebrow">
-        {params.get("skill")
-          ? `${params.get("skill")} re-test`
-          : "Adaptive assessment"}{" "}
-        · {i + 1}/{exam.total}
-      </p>
-
-      <h1>{exam.role} competency assessment</h1>
+      <p className="eyebrow">SkillSetra · Assessment</p>
+      <h1>{exam.role} assessment</h1>
 
       <p className="muted">
-        Questions come from a role-aligned bank on the server. Your
-        answers are graded and saved when you submit.
+        Answer one question at a time. Your results appear after the final
+        question.
       </p>
+
+      <div className="card" style={{ marginBottom: 18 }}>
+        <label htmlFor="assessment-level">Difficulty level</label>
+
+        <select
+          id="assessment-level"
+          value={selectedLevel}
+          disabled={busy}
+          onChange={(event) => changeLevel(event.target.value)}
+        >
+          {LEVELS.map((level) => (
+            <option key={level} value={level}>
+              {level}
+            </option>
+          ))}
+        </select>
+
+        <p className="small muted">
+          Changing the level starts a new assessment.
+        </p>
+      </div>
+
+      <div className="row" style={{ justifyContent: "space-between" }}>
+        <p className="eyebrow">
+          Question {index + 1} of {questionCount}
+        </p>
+        <strong>{progress}% answered</strong>
+      </div>
 
       <div
         className="bar"
-        aria-hidden
-        style={{ margin: "14px 0 20px" }}
+        role="progressbar"
+        aria-label="Assessment completion"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progress}
+        style={{ marginBottom: 20 }}
       >
-        <i
-          style={{
-            width: `${(i / exam.total) * 100}%`,
-          }}
-        />
+        <i style={{ width: `${progress}%` }} />
       </div>
 
       <div className="card">
         <p className="eyebrow">
-          {q.dimension} · {q.level}
+          {question.dimension || question.skill || "General"}
+          {" · "}
+          {question.level || selectedLevel}
         </p>
 
-        <h2 style={{ fontSize: "1.7rem" }}>
-          {q.prompt}
+        <h2 style={{ fontSize: "1.6rem", lineHeight: 1.35 }}>
+          {question.prompt}
         </h2>
 
         <div
@@ -221,67 +313,69 @@ function Exam() {
           aria-label="Answer choices"
           style={{ marginTop: 18 }}
         >
-          {q.options.map((o, k) => (
-            <button
-              key={k}
-              role="radio"
-              aria-checked={answers[q.id] === k}
-              className={`option ${
-                answers[q.id] === k ? "on" : ""
-              }`}
-              onClick={() =>
-                setAnswers({
-                  ...answers,
-                  [q.id]: k,
-                })
-              }
-            >
-              {LETTERS[k]}. {o}
-            </button>
-          ))}
+          {(question.options || []).map((option, optionIndex) => {
+            const selected = answers[question.id] === optionIndex;
+
+            return (
+              <button
+                type="button"
+                key={optionIndex}
+                role="radio"
+                aria-checked={selected}
+                className={`option ${selected ? "on" : ""}`}
+                onClick={() =>
+                  setAnswers((previous) => ({
+                    ...previous,
+                    [question.id]: optionIndex,
+                  }))
+                }
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  marginBottom: 10,
+                }}
+              >
+                <strong>{LETTERS[optionIndex]}.</strong> {option}
+              </button>
+            );
+          })}
         </div>
 
         {err && (
-          <p
-            role="alert"
-            style={{ color: "var(--bad-t)" }}
-          >
+          <p role="alert" style={{ color: "var(--bad-t)" }}>
             {err}
           </p>
         )}
 
-        <div className="row">
-          {i > 0 && (
+        <div className="row" style={{ marginTop: 18 }}>
+          {index > 0 && (
             <button
+              type="button"
               className="btn"
-              onClick={() => setI(i - 1)}
+              disabled={busy}
+              onClick={() => setIndex((previous) => previous - 1)}
             >
               Previous
             </button>
           )}
 
-          {last ? (
+          {!isLast ? (
             <button
+              type="button"
               className="btn primary"
-              disabled={
-                busy ||
-                answers[q.id] === undefined
-              }
-              onClick={submit}
+              disabled={answers[question.id] === undefined || busy}
+              onClick={() => setIndex((previous) => previous + 1)}
             >
-              {busy
-                ? "Grading…"
-                : "Submit assessment"}
+              Next question
             </button>
           ) : (
             <button
+              type="button"
               className="btn primary"
-              disabled={
-                answers[q.id] === undefined
-              }
-              onClick={() => setI(i + 1)}
+              disabled={answers[question.id] === undefined || busy}
+              onClick={submit}
             >
-              Next question
+              {busy ? "Grading..." : "Submit assessment"}
             </button>
           )}
         </div>
