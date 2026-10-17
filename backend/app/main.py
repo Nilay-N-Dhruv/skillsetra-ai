@@ -12,8 +12,27 @@ from .core.config import settings
 from .core.db import DatabaseError
 from .core.security import ip_limiter
 from .ai.provider import NeedsBrowserAI
-from .api import (challenges, dashboard, exam, extras, graph, insights, interviews, jobcheck, jobs, labs, learning,
-                  notifications, passport, profile, radar, search, whatif)
+from .api import (
+    challenges,
+    dashboard,
+    exam,
+    extras,
+    graph,
+    insights,
+    interviews,
+    jobcheck,
+    jobs,
+    labs,
+    learning,
+    notifications,
+    passport,
+    profile,
+    radar,
+    resume,
+    search,
+    whatif,
+    analytics
+)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("skillsetra")
@@ -155,3 +174,5 @@ app.include_router(passport.router)
 app.include_router(radar.router)
 app.include_router(jobcheck.router)
 app.include_router(search.router)
+app.include_router(resume.router)
+app.include_router(analytics.router)
