@@ -394,3 +394,67 @@ async def health_db():
                 out["tables"][t] = f"network error: {type(e).__name__}"
     out["verdict"] = "All tables reachable." if all(v == "ok" for v in out["tables"].values()) else "See the tables that are not ok."
     return out
+
+@router.get("/profile/role-history")
+async def get_role_history(
+    user: CurrentUser = Depends(get_current_user),
+):
+    db = db_for(user)
+
+    profiles = await db.select("profiles", user.id)
+    current_role = profiles[0].get("target_role") if profiles else None
+
+    switches = await db.select(
+        "role_switches",
+        user.id,
+        order="created_at",
+        desc=True,
+        limit=100,
+    )
+
+    results = await db.select(
+        "exam_results",
+        user.id,
+        order="created_at",
+        desc=True,
+        limit=200,
+    )
+
+    roles = []
+    seen = set()
+
+    def add_role(role):
+        if role and role not in seen:
+            seen.add(role)
+            roles.append(role)
+
+    add_role(current_role)
+
+    for row in switches:
+        add_role(row.get("from_role"))
+        add_role(row.get("to_role"))
+
+    for row in results:
+        add_role(row.get("role"))
+
+    assessment_results = []
+
+    for row in results:
+        correct = int(row.get("correct") or 0)
+        total = int(row.get("total") or 0)
+
+        assessment_results.append({
+            "session_id": row.get("session_id"),
+            "role": row.get("role"),
+            "correct": correct,
+            "total": total,
+            "pct": round(correct * 100 / total) if total else 0,
+            "created_at": row.get("created_at"),
+        })
+
+    return {
+        "current_role": current_role,
+        "roles": roles,
+        "switches": switches,
+        "results": assessment_results,
+    }
