@@ -1154,3 +1154,289 @@ table.sheet th,table.sheet td{text-align:left;padding:8px 10px;border-bottom:1px
     padding: 0 16px 16px;
   }
 }
+
+/* ============================================
+   SKILLSETRA HOMEPAGE — HERO DESIGN
+   This block only styles the public homepage hero.
+   All existing theme, dashboard, auth, chart,
+   loader, evidence and role-history styles remain.
+   ============================================ */
+
+.homepage-hero {
+  padding: 42px 0 38px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Override the existing generic .hero .container grid only here. */
+.hero .homepage-hero-container {
+  display: block;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-inline: clamp(24px, 6vw, 100px);
+}
+
+.homepage-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(400px, 0.85fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 64px);
+  min-height: 420px;
+}
+
+.homepage-hero-copy {
+  width: 100%;
+  max-width: 720px;
+  min-width: 0;
+}
+
+.homepage-hero-copy .eyebrow {
+  margin: 0 0 20px;
+  color: #168348;
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.homepage-hero-copy h1 {
+  margin: 0 0 24px;
+  color: #10271b;
+  font-size: clamp(3.1rem, 5.1vw, 5rem);
+  font-weight: 750;
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+}
+
+.homepage-hero-description {
+  max-width: 660px;
+  margin: 0 0 26px;
+  color: #243b2f;
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  line-height: 1.65;
+}
+
+.homepage-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.homepage-hero-actions .btn {
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.98rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.homepage-hero-actions .btn.primary {
+  background: #159f50;
+  border-color: #159f50;
+  color: #fff;
+}
+
+.homepage-hero-actions .btn.primary:hover {
+  background: #128642;
+  border-color: #128642;
+}
+
+/* Standalone graph: no extra card, border or background. */
+.homepage-graph-wrap {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.homepage-demo-graph {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  overflow: visible;
+}
+
+.demo-grid-ring {
+  fill: none;
+  stroke: #d9e8de;
+  stroke-width: 1.5;
+}
+
+.demo-grid-axis {
+  stroke: #d9e8de;
+  stroke-width: 1.4;
+}
+
+.demo-profile-area {
+  fill: rgba(22, 163, 74, 0.24);
+  stroke: none;
+}
+
+.demo-profile-line {
+  fill: none;
+  stroke: #168348;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.demo-profile-point {
+  fill: #fff;
+  stroke: #168348;
+  stroke-width: 2.5;
+}
+
+.demo-graph-label {
+  fill: #587064;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 450;
+}
+
+.homepage-graph-caption {
+  max-width: 520px;
+  margin: 12px 0 0;
+  color: #718477;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.homepage-hero + .block {
+  padding-top: 48px;
+}
+
+/* Tablet */
+@media (max-width: 1000px) {
+  .homepage-hero {
+    padding-top: 36px;
+  }
+
+  .hero .homepage-hero-container {
+    padding-inline: 32px;
+  }
+
+  .homepage-hero-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: 24px;
+    min-height: 380px;
+  }
+
+  .homepage-hero-copy h1 {
+    font-size: clamp(2.8rem, 5vw, 3.8rem);
+  }
+
+  .homepage-demo-graph {
+    max-width: 440px;
+  }
+
+  .demo-graph-label {
+    font-size: 11px;
+  }
+}
+
+/* Mobile: text first, graph below. */
+@media (max-width: 760px) {
+  .homepage-hero {
+    padding: 32px 0 24px;
+  }
+
+  .hero .homepage-hero-container {
+    padding-inline: 22px;
+  }
+
+  .homepage-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    min-height: 0;
+  }
+
+  .homepage-hero-copy {
+    max-width: 100%;
+  }
+
+  .homepage-hero-copy .eyebrow {
+    margin-bottom: 16px;
+  }
+
+  .homepage-hero-copy h1 {
+    margin-bottom: 20px;
+    font-size: clamp(2.7rem, 9vw, 4rem);
+    line-height: 1.06;
+  }
+
+  .homepage-hero-description {
+    margin-bottom: 22px;
+    font-size: 1.05rem;
+    line-height: 1.65;
+  }
+
+  .homepage-hero-actions {
+    gap: 10px;
+  }
+
+  .homepage-graph-wrap {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .homepage-demo-graph {
+    max-width: 100%;
+  }
+
+  .homepage-graph-caption {
+    margin-top: 4px;
+  }
+
+  .homepage-hero + .block {
+    padding-top: 36px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 420px) {
+  .hero .homepage-hero-container {
+    padding-inline: 18px;
+  }
+
+  .homepage-hero-copy h1 {
+    font-size: clamp(2.5rem, 10vw, 3.2rem);
+  }
+
+  .homepage-hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .homepage-hero-actions .btn {
+    width: 100%;
+  }
+}
+
+/* Accessibility: respect reduced motion for this hero. */
+@media (prefers-reduced-motion: reduce) {
+  .homepage-hero-copy > * {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* Homepage: keep the hero and adjacent section on one background colour. */
+.homepage-hero,
+.homepage-hero + .block {
+  background: var(--bg);
+}
